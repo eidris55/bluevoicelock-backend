@@ -2,3 +2,4 @@ streamlit
 resemblyzer
 numpy
 scipy
+soundfile
