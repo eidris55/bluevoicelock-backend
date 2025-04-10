@@ -4,6 +4,7 @@ from resemblyzer import VoiceEncoder, preprocess_wav
 import os
 from scipy.spatial.distance import cosine
 import tempfile
+import soundfile as sf
 
 st.set_page_config(page_title="BlueVoiceLock", layout="centered")
 
@@ -27,6 +28,9 @@ if file1 and file2:
 
         wav1 = preprocess_wav(path1)
         wav2 = preprocess_wav(path2)
+        def preprocess_wav(file_path):
+            wav, sr = sf.read(file_path)
+            return wav
 
         embed1 = encoder.embed_utterance(wav1)
         embed2 = encoder.embed_utterance(wav2)
