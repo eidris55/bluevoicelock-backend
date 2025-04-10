@@ -1,36 +1,40 @@
 import streamlit as st
 import numpy as np
-from resemblyzer import VoiceEncoder, preprocess_wav
-import os
+import soundfile as sf
+from resemblyzer import VoiceEncoder
 from scipy.spatial.distance import cosine
 import tempfile
-import soundfile as sf
 
 st.set_page_config(page_title="BlueVoiceLock", layout="centered")
 
 st.title("🔵 BlueVoiceLock")
 st.subheader("VoIP Caller Authentication using Voiceprint AI")
 
-file1 = st.file_uploader("Upload Verified Voiceprint", type=["wav", "mp3"])
-file2 = st.file_uploader("Upload Incoming Caller Voice", type=["wav", "mp3"])
+file1 = st.file_uploader("Upload Verified Voiceprint", type=["wav"])
+file2 = st.file_uploader("Upload Incoming Caller Voice", type=["wav"])
+
+# 👉 Custom audio loader using soundfile
+def load_audio(file_path):
+    wav, sr = sf.read(file_path)
+    if wav.ndim > 1:
+        wav = wav.mean(axis=1)  # Convert stereo to mono
+    return wav
 
 if file1 and file2:
     with st.spinner("Analyzing voice similarity..."):
         encoder = VoiceEncoder()
 
-        with tempfile.NamedTemporaryFile(delete=False) as tmp1:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp1:
             tmp1.write(file1.read())
             path1 = tmp1.name
 
-        with tempfile.NamedTemporaryFile(delete=False) as tmp2:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp2:
             tmp2.write(file2.read())
             path2 = tmp2.name
 
-        wav1 = preprocess_wav(path1)
-        wav2 = preprocess_wav(path2)
-        def preprocess_wav(file_path):
-            wav, sr = sf.read(file_path)
-            return wav
+        # Use custom loader instead of preprocess_wav
+        wav1 = load_audio(path1)
+        wav2 = load_audio(path2)
 
         embed1 = encoder.embed_utterance(wav1)
         embed2 = encoder.embed_utterance(wav2)
