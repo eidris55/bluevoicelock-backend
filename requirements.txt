@@ -3,4 +3,3 @@ numpy
 librosa
 plotly
 scikit-learn
-plotly
