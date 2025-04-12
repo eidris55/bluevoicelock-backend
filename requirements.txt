@@ -1,5 +1,5 @@
 streamlit
-resemblyzer
 numpy
-scipy
-soundfile
+librosa
+plotly
+scikit-learn
