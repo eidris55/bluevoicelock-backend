@@ -1,5 +1,7 @@
 streamlit
 numpy
 librosa
-plotly
+matplotlib
 scikit-learn
+pandas
+seaborn
